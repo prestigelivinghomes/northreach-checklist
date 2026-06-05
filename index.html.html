@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>North Reach — Setup Checklist</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #080e1a;
+    color: #e0eaf5;
+    min-height: 100vh;
+    padding: 0 0 60px;
+  }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, #0d1a30 0%, #0a1220 100%);
+    border-bottom: 1px solid #1e3050;
+    padding: 28px 32px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .logo-area { display: flex; align-items: center; gap: 14px; }
+
+  .logo-svg { flex-shrink: 0; }
+
+  .header-titles h1 {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: 0.5px;
+  }
+  .header-titles p {
+    font-size: 0.8rem;
+    color: #6a8faf;
+    margin-top: 2px;
+  }
+
+  .overall-progress {
+    text-align: right;
+  }
+  .overall-progress .pct {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #2e6fff;
+    line-height: 1;
+  }
+  .overall-progress .pct-label {
+    font-size: 0.72rem;
+    color: #6a8faf;
+    margin-top: 2px;
+  }
+  .overall-bar {
+    margin-top: 6px;
+    width: 160px;
+    height: 6px;
+    background: #1e3050;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-left: auto;
+  }
+  .overall-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #2e6fff, #5a9aff);
+    border-radius: 3px;
+    transition: width 0.4s ease;
+  }
+
+  /* PHASE TABS */
+  .tabs {
+    display: flex;
+    gap: 0;
+    padding: 24px 32px 0;
+    border-bottom: 1px solid #1e3050;
+    overflow-x: auto;
+  }
+  .tab-btn {
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    color: #6a8faf;
+    font-size: 0.82rem;
+    font-weight: 600;
+    padding: 10px 20px 12px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+    letter-spacing: 0.3px;
+  }
+  .tab-btn:hover { color: #a0c4e0; }
+  .tab-btn.active {
+    color: #2e6fff;
+    border-bottom-color: #2e6fff;
+  }
+  .tab-btn .tab-badge {
+    display: inline-block;
+    background: #1e3050;
+    color: #6a8faf;
+    font-size: 0.65rem;
+    font-weight: 700;
+    border-radius: 10px;
+    padding: 1px 7px;
+    margin-left: 7px;
+    vertical-align: middle;
+  }
+  .tab-btn.active .tab-badge {
+    background: #1a3a70;
+    color: #4a90ff;
+  }
+
+  /* MAIN CONTENT */
+  .main { padding: 28px 32px; max-width: 900px; }
+
+  .phase-panel { display: none; }
+  .phase-panel.active { display: block; }
+
+  .phase-intro {
+    background: #0d1a30;
+    border: 1px solid #1e3050;
+    border-left: 4px solid #2e6fff;
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+    font-size: 0.85rem;
+    color: #8fafc0;
+    line-height: 1.6;
+  }
+  .phase-intro strong { color: #c0daf0; }
+
+  /* SECTION */
+  .section {
+    margin-bottom: 28px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .section-title-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+
+  .section-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #c0daf0;
+    letter-spacing: 0.3px;
+  }
+
+  .section-progress {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-bar {
+    width: 80px;
+    height: 5px;
+    background: #1e3050;
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .section-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.4s ease;
+  }
+  .section-count {
+    font-size: 0.72rem;
+    color: #6a8faf;
+    white-space: nowrap;
+    min-width: 36px;
+    text-align: right;
+  }
+  .section-chevron {
+    color: #3a5070;
+    font-size: 0.7rem;
+    transition: transform 0.2s;
+    margin-left: 6px;
+  }
+  .section-header.collapsed .section-chevron { transform: rotate(-90deg); }
+
+  .section-items {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    background: #0a1220;
+    border: 1px solid #1a2840;
+    border-radius: 10px;
+    padding: 10px;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+
+  /* ITEM */
+  .item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 7px;
+    cursor: pointer;
+    transition: background 0.15s;
+    position: relative;
+  }
+  .item:hover { background: #0e1e38; }
+  .item.done { opacity: 0.6; }
+  .item.done .item-label { text-decoration: line-through; color: #4a6a8a; }
+  .item.already-done { border-left: 3px solid #22c55e; padding-left: 9px; }
+
+  .item-check {
+    width: 20px;
+    height: 20px;
+    border-radius: 5px;
+    border: 2px solid #2a4060;
+    background: transparent;
+    flex-shrink: 0;
+    margin-top: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+  }
+  .item.done .item-check {
+    background: #2e6fff;
+    border-color: #2e6fff;
+  }
+  .item.already-done .item-check {
+    background: #22c55e;
+    border-color: #22c55e;
+  }
+  .checkmark { color: #fff; font-size: 0.7rem; display: none; }
+  .item.done .checkmark, .item.already-done .checkmark { display: block; }
+
+  .item-content { flex: 1; min-width: 0; }
+  .item-label {
+    font-size: 0.85rem;
+    color: #c0daf0;
+    line-height: 1.4;
+    font-weight: 500;
+  }
+  .item-note {
+    font-size: 0.75rem;
+    color: #4a6a8a;
+    margin-top: 3px;
+    line-height: 1.4;
+  }
+  .item.done .item-note { color: #3a4a5a; }
+
+  .item-tag {
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    align-self: flex-start;
+    margin-top: 2px;
+  }
+  .tag-done-already { background: #163a20; color: #4ade80; }
+  .tag-quick { background: #1a2840; color: #60a5fa; }
+  .tag-paid { background: #2a1a30; color: #c084fc; }
+  .tag-legal { background: #2a1a10; color: #fb923c; }
+  .tag-optional { background: #1a2020; color: #34d399; }
+
+  /* SCALE WARNING BANNER */
+  .scale-banner {
+    background: linear-gradient(135deg, #1a1a30, #1a2040);
+    border: 1px solid #2e2e60;
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .scale-banner-icon { font-size: 1.5rem; flex-shrink: 0; }
+  .scale-banner-text h3 { font-size: 0.9rem; color: #c0b4ff; font-weight: 700; margin-bottom: 4px; }
+  .scale-banner-text p { font-size: 0.8rem; color: #7a7aaa; line-height: 1.5; }
+
+  /* RESET */
+  .reset-btn {
+    background: none;
+    border: 1px solid #2a3a50;
+    color: #4a6a8a;
+    font-size: 0.75rem;
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 4px;
+  }
+  .reset-btn:hover { border-color: #ff4a4a; color: #ff7a7a; }
+
+  /* RESPONSIVE */
+  @media (max-width: 600px) {
+    .header { padding: 20px 16px; }
+    .tabs { padding: 16px 16px 0; }
+    .main { padding: 20px 16px; }
+    .overall-bar { width: 110px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="logo-area">
+    <svg class="logo-svg" width="120" height="44" viewBox="0 0 160 52" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="nrSilver" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#d4dfe8"/>
+          <stop offset="40%" style="stop-color:#ffffff"/>
+          <stop offset="100%" style="stop-color:#8fafc0"/>
+        </linearGradient>
+        <linearGradient id="nrSilver2" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#8fafc0"/>
+          <stop offset="50%" style="stop-color:#c0d4e0"/>
+          <stop offset="100%" style="stop-color:#6a8fa8"/>
+        </linearGradient>
+      </defs>
+      <polygon points="18,48 18,12 26,12 38,36 38,12 46,12 46,48 38,48 26,24 26,48" fill="url(#nrSilver2)" opacity="0.75"/>
+      <polygon points="8,48 8,12 16,12 28,36 28,12 36,12 36,48 28,48 16,24 16,48" fill="url(#nrSilver)"/>
+      <line x1="56" y1="8" x2="56" y2="52" stroke="#4a6070" stroke-width="1.2"/>
+      <text x="64" y="33" font-family="Arial" font-size="20" font-weight="800" letter-spacing="3" fill="#ffffff">NORTH</text>
+      <text x="65" y="48" font-family="Arial" font-size="12" font-weight="400" letter-spacing="6" fill="#8fafc0">REACH</text>
+    </svg>
+  </div>
+  <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
+    <div class="overall-progress">
+      <div class="pct" id="overall-pct">0%</div>
+      <div class="pct-label">OVERALL COMPLETE</div>
+      <div class="overall-bar"><div class="overall-bar-fill" id="overall-bar-fill" style="width:0%"></div></div>
+    </div>
+    <button class="reset-btn" onclick="resetAll()">Reset all</button>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab(0)" id="tab-0">
+    ✅ Already Done <span class="tab-badge" id="badge-0">2</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab(1)" id="tab-1">
+    🚀 First Client <span class="tab-badge" id="badge-1">0</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab(2)" id="tab-2">
+    📈 Scaling Up <span class="tab-badge" id="badge-2">0</span>
+  </button>
+</div>
+
+<!-- CONTENT -->
+<div class="main">
+
+  <!-- ═══ PHASE 0: ALREADY DONE ═══ -->
+  <div class="phase-panel active" id="panel-0">
+    <div class="phase-intro">
+      <strong>Great start — you're further along than you think.</strong> These items are already complete based on what you've built. Mark them off to track your real starting point, then head to the First Client tab for what's still needed.
+    </div>
+
+    <div class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <div class="section-title-row">
+          <div class="section-icon" style="background:#163a20;">🏗️</div>
+          <span class="section-title">GoHighLevel Foundation</span>
+        </div>
+        <div class="section-progress">
+          <div class="section-bar"><div class="section-bar-fill" style="background:#22c55e;"></div></div>
+          <span class="section-count"></span>
+          <span class="section-chevron">▼</span>
+        </div>
+      </div>
+      <div class="section-items">
+        <div class="item already-done" onclick="toggleItem(this)">
+          <div class="item-check"><span class="checkmark">✓</span></div>
+          <div class="item-content">
+            <div class="item-label">GHL account set up</div>
+            <div class="item-note">Your GoHighLevel account is live and active</div>
+          </div>
+          <span class="item-tag tag-done-already">Done</span>
+        </div>
+        <div class="item already-done" onclick="toggleItem(this)">
+          <div class="item-check"><span class="checkmark">✓</span></div>
+          <div class="item-content">
+            <div class="item-label">Missed call → SMS workflows built in GHL</div>
+            <div class="item-note">Automation triggers when a call is missed and sends SMS response</div>
+          </div>
+          <span class="item-tag tag-done-already">Done</span>
+        </div>
+        <div class="item already-done" onclick="toggleItem(this)">
+          <div class="item-check"><span class="checkmark">✓</span></div>
+          <div class="item-content">
+            <div class="item-label">North Reach landing page live in GHL</div>
+            <div class="item-note">Website is published and ready to send prospects to</div>
+          </div>
+          <span class="item-tag tag-done-already">Done</span>
+        </div>
+        <div class="item already-done" onclick="toggleItem(this)">
+          <div class="item-check"><span class="checkmark">✓</span></div>
+          <div class="item-content">
+            <div class="item-label">Booking calendar integrated on website</div>
+            <div class="item-note">GHL calendar widget embedded for prospect bookings</div>
+          </div>
+          <span class="item-tag tag-done-already">Done</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <div class="section-title-row">
+          <div class="section-icon" style="background:#163a20;">🧰</div>
+          <span class="section-title">Tools & Accounts</span>
+        </div>
+        <div class="section-progress">
+          <div class="section-bar"><div class="section-bar-fill" style="background:#22c55e;"></div></div>
+          <span class="section-count"></span>
+          <span class="section-chevron">▼</span>
+        </div>
+      </div>
+      <div class="section-items">
+        <div class="item already-done" onclick="toggleItem(this)">
+          <div class="item-check"><span class="checkmark">✓</span></div>
+          <div class="item-content">
+            <div class="item-label">Make.com account active</div>
+            <div class="item-note">Automation platform for connecting GHL with AI and other services</div>
+          </div>
+          <span class="item-tag tag-done-already">Done</span>
+        </div>
+        <div class="item already-done" onclick="toggleItem(this)">
+          <div class="item-check"><span class="checkmark">✓</span></div>
+          <div class="item-content">
+            <div class="item-label">ChatGPT / OpenAI account active</div>
+            <div class="item-note">For AI-generated SMS responses and lead qualification</div>
+          </div>
+          <span class="item-tag tag-done-already">Done</span>
+        </div>
+        <div class="item already-done" onclick="toggleItem(this)">
+          <div class="item-check"><span class="checkmark">✓</span></div>
+          <div class="item-content">
+            <div class="item-label">Pricing model built</div>
+            <div class="item-note">Cost analysis spreadsheet completed — you know your margins</div>
+          </div>
+          <span class="item-tag tag-done-already">Done</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ PHASE 1: FIRST CLIENT ═══ -->
+  <div class="phase-panel" id="panel-1">
+    <div class="phase-intro">
+      <strong>Minimum requirements to onboard your first paying client.</strong> Focus on getting these done before you run outreach. The items marked "Quick" can be done in under an hour. Items marked "Paid" have a cost.
+    </div>
+
+    <div class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <div class="section-title-row">
+          <div class="section-icon" style="background:#0f2040;">📞</div>
+          <span class="section-title">GHL Phone & Messaging</span>
+        </div>
+        <div class="section-progress">
+          <div class="section-bar"><div class="section-bar-fill" style="background:#2e6fff;"></div></div>
+          <span class="section-count"></span>
+          <span class="section-chevron">▼</span>
+        </div>
+      </div>
+      <div class="section-items">
+        <div class="item" onclick="toggleItem(this)">
+          <div class="item-check"><span class="checkmark">✓</span></div>
+          <div class="item-content">
+            <div class="item-label">Enable LC Phone in GHL (Twilio-backed SMS)</div>
+            <div class="item-note">Settings → Phone Numbers → Enable LC Phone System. Load wallet with ~$50 AUD to start.</div>
+          </div>
+          <span class="item-tag tag-paid">Paid</span>
+        </div>
+        <div class="item" onclick="toggleItem(this)">
+          <div class="item-check"><span class="checkmark">✓</span></div>
+          <div class="item-content">
+            <div class="item-label">Purchase an Australian phone number in GHL</div>
+            <div class="item-note">~$5 USD/month. Must be a local Australian number (0400/02/03 prefix) for client trust.</div>
+          </div>
+          <span class="item-tag tag-paid">Paid</span>
+        </div>
+        <div class="item" onclick="toggleItem(this)">
+          <div class="item-check"><span class="checkmark">✓</span></div>
+          <div class="item-content">
+            <div class="item-label">Create a GHL sub-account for your first client</div>
+            <div class="item-note">Agency → Add Sub-Account. Name it after the plumbing business. Keeps their data separate from yours.</div>
+          </div>
+          <span class="item-tag tag-quick">Quick</span>
+        </div>
+        <div class="item" onclick="toggleItem(this)">
+          <div class="item-check"><span class="checkmark">✓</span></div>
+          <div class="item-content">
+            <div class="item-label">Copy workflows into the client's sub-account</div>
+            <div class="item-note">Use GHL's "Copy to sub-account" feature or re-build the missed call workflow in their account.</div>
+          </div>
+          <span class="item-tag tag-quick">Quick</span>
+        </div>
+        <div class="item" onclick="toggleItem(this)">
+          <div class="item-check"><span class="checkmark">✓</span></div>
+          <div class="item-content">
+            <div class="item-label">Test the full missed call → SMS → AI reply loop</div>
+            <div class="item-note">Call the GHL number, don't answer, confirm SMS fires within 60 seconds. Reply to it and verify AI responds.</div>
+          </div>
+          <span class="item-tag tag-quick">Quick</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <div class="section-title-row">
+          <div class="section-icon" style="background:#0f2040;">📋</div>
+          <span class="section-title">Client Onboarding Setup</span>
+        </div>
+        <div class="section-progress">
+          <div class="section-bar"><div class="section-bar-fill" style="background:#2e6fff;"></div></div>
+          <span class="section-count"></span>
+          <span class="section-chevron">▼</span>
+        </div>
+      </div>
+      <div class="section-items">
+        <div class="item" onclick="toggleItem(this)">
+          <div class="item-check"><span class="checkmark">✓</span></div>
+          <div class="item-content">
+            <div class="item-label">Set up call forwarding with the client</div>
+            <div class="item-note">Client's existing mobile number must forward unanswered calls to the GHL number. Walk them through their carrier settings or use a forwarding app. This is the #1 technical step that makes everything work.</div>
+          </div>
+          <span class="item-tag tag-quick">Quick</span>
+        </div>
+        <div class="item" onclick="toggleItem(this)">
+          <div class="item-check"><span class="checkmark">✓</span></div>
+          <div class="item-content">
+            <div class="item-label">Customise SMS templates with client's business name & tone</div>
+            <div class="item-note">Update the auto-SMS to say "Hi, you've reached [Jim's Plumbing]..." — personalised messages convert much better than generic ones.</div>
+          </div>
+          <span class="item-tag tag-quick">Quick</span>
+        </div>
+        <div class="item" onclick="toggleItem(this)">
+          <div class="item-check"><span class="checkmark">✓</span></div>
+          <div class="item-content">
+            <div class="item-label">Get client's business info for AI context</div>
+            <div class="item-note">Services offered, service area suburbs, pricing guide, emergency availability. Feed this into the AI prompt so responses are accurate to their business.</div>
+          </div>
+          <span class="item-tag tag-quick">Quick</span>
+        </div>
+        <div class="item" onclick="toggleItem(this)">
+          <div class="item-check"><span class="checkmark">✓</span></div>
+          <div class="item-content">
+            <div class="item-label">Create a simple onboarding document for the client</div>
+            <div class="item-note">One page: what the system does, how to view missed calls, who to contact for support. Builds trust and reduces support calls.</div>
+          </div>
+          <span class="item-tag tag-quick">Quick</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <div class="section-title-row">
+          <div class="section-icon" style="background:#0f2040;">💳</div>
+          <span class="section-title">Payments & Agreements</span>
+        </div>
+        <div class="section-progress">
+          <div class="section-bar"><div class="section-bar-fill" style="background:#2e6fff;"></div></div>
+          <span class="section-count"></span>
+          <span class="section-chevron">▼</span>
+        </div>
+      </div>
+      <div class="section-items">
+        <div class="item" onclick="toggleItem(this)">
+          <div class="item-check"><span class="checkmark">✓</span></div>
+          <div class="item-content">
+            <div class="item-label">Set up a way to collect payment</div>
+            <div class="item-note">Stripe is the easiest — free to set up, 1.7% + 30¢ per transaction in AU. GHL has Stripe integration built in. Alternatively invoice via your bank.</div>
+          </div>
+          <span class="item-tag tag-quick">Quick</span>
+        </div>
+        <div class="item" onclick="toggleItem(this)">
+          <div class="item-check"><span class="checkmark">✓</span></div>
+          <div class="item-content">
+            <div class="item-label">Have a simple written agreement with your client</div>
+            <div class="item-note">Even an email confirming the price, what's included, and 30-day cancellation is enough to start. Protects both sides.</div>
+          </div>
+          <span class="item-tag tag-legal">Legal</span>
+        </div>
+        <div class="item" onclick="toggleItem(this)">
+          <div class="item-check"><span class="checkmark">✓</span></div>
+          <div class="item-content">
+            <div class="item-label">Agree on a reporting cadence with the client</div>
+            <div class="item-note">Monthly is standard. Even a short summary — "47 missed calls recovered, 12 bookings" — justifies the fee and reduces churn.</div>
+          </div>
+          <span class="item-tag tag-quick">Quick</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <div class="section-title-row">
+          <div class="section-icon" style="background:#0f2040;">🎯</div>
+          <span class="section-title">Finding Your First Client</span>
+        </div>
+        <div class="section-progress">
+          <div class="section-bar"><div class="section-bar-fill" style="background:#2e6fff;"></div></div>
+          <span class="section-count"></span>
+          <span class="section-chevron">▼</span>
+        </div>
+      </div>
+      <div class="section-items">
+        <div class="item" onclick="toggleItem(this)">
+          <div class="item-check"><span class="checkmark">✓</span></div>
+          <div class="item-content">
+            <div class="item-label">Build a shortlist of 20 Sydney plumbing businesses to contact</div>
+            <div class="item-note">Google Maps is your best source. Look for businesses with reviews but no "we'll call you back" systems. Sole traders and small teams (1–5 plumbers) are your ideal target.</div>
+          </div>
+          <span class="item-tag tag-quick">Quick</span>
+        </div>
+        <div class="item" onclick="toggleItem(this)">
+          <div class="item-check"><span class="checkmark">✓</span></div>
+          <div class="item-content">
+            <div class="item-label">Prepare a 60-second "pain point" pitch</div>
+            <div class="item-note">"You're on the tools all day — every missed call could be a $1,000 job. Our system texts them back instantly so you never lose a lead." Simple, specific, true.</div>
+          </div>
+          <span class="item-tag tag-quick">Quick</span>
+        </div>
+        <div class="item" onclick="toggleItem(this)">
+          <div class="item-check"><span class="checkmark">✓</span></div>
+          <div class="item-content">
+            <div class="item-label">Consider offering a free 14-day trial to first client</div>
+            <div class="item-note">Zero risk for them = easier yes. You spend ~$20–$30 in SMS costs to prove the system works, and you get a real case study and testimonial in return.</div>
+          </div>
+          <span class="item-tag tag-optional">Optional</span>
+        </div>
+        <div class="item" onclick="toggleItem(this)">
+          <div class="item-check"><span class="checkmark">✓</span></div>
+          <div class="item-content">
+            <div class="item-label">Start outreach — phone, email, or in-person</div>
+            <div class="item-note">Phone calls convert best for trade businesses. Don't over-polish the pitch — plumbers respect directness. Send the website link as follow-up.</div>
+          </div>
+          <span class="item-tag tag-quick">Quick</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <div class="section-title-row">
+          <div class="section-icon" style="background:#1a0f10;">⚖️</div>
+          <span class="section-title">Legal & Admin Basics</span>
+        </div>
+        <div class="section-progress">
+          <div class="section-bar"><div class="section-bar-fill" style="background:#2e6fff;"></div></div>
+          <span class="section-count"></span>
+          <span class="section-chevron">▼</span>
+        </div>
+      </div>
+      <div class="section-items">
+        <div class="item" onclick="toggleItem(this)">
+          <div class="item-check"><span class="checkmark">✓</span></div>
+          <div class="item-content">
+            <div class="item-label">Register an ABN (Australian Business Number)</div>
+            <div class="item-note">Free and takes 10 minutes at business.gov.au. You need this to invoice clients legally and to register for GST later.</div>
+          </div>
+          <span class="item-tag tag-legal">Legal</span>
+        </div>
+        <div class="item" onclick="toggleItem(this)">
+          <div class="item-check"><span class="checkmark">✓</span></div>
+          <div class="item-content">
+            <div class="item-label">Open a separate business bank account</div>
+            <div class="item-note">Keeps revenue and expenses clean for tax time. Up bank business account is free and takes minutes to open.</div>
+          </div>
+          <span class="item-tag tag-legal">Legal</span>
+        </div>
+        <div class="item" onclick="toggleItem(this)">
+          <div class="item-check"><span class="checkmark">✓</span></div>
+          <div class="item-content">
+            <div class="item-label">Add a Privacy Policy to your website</div>
+            <div class="item-note">Required under Australian Privacy Act if you're collecting names and phone numbers (which you are). A basic free policy from a generator is fine for now.</div>
+          </div>
+          <span class="item-tag tag-legal">Legal</span>
+        </div>
+        <div class="item" onclick="toggleItem(this)">
+          <div class="item-check"><span class="checkmark">✓</span></div>
+          <div class="item-content">
+            <div class="item-label">Set up a domain name and professional email</div>
+            <div class="item-note">northreachdigital.com.au (or similar). ~$20/year. A @northreach email (via Google Workspace ~$12/month) looks far more credible than Gmail when you contact plumbers.</div>
+          </div>
+          <span class="item-tag tag-paid">Paid</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ PHASE 2: SCALING ═══ -->
+  <div class="phase-panel" id="panel-2">
+    <div class="scale-banner">
+      <div class="scale-banner-icon">📈</div>
+      <div class="scale-banner-text">
+        <h3>Don't worry about these until you have 2–3 paying clients</h3>
+        <p>Focus on getting client #1 profitable first. These items are what turns a side income into a real agency. Come back to this tab once the system is proven.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <div class="section-title-row">
+          <div class="section-icon" style="background:#1a1040;">⚙️</div>
+          <span class="section-title">Tech & Infrastructure</span>
+        </div>
+        <div class="section-progress">
+          <div class="section-bar"><div class="section-bar-fill" style="background:#a78bfa;"></div></div>
+          <span class="section-count"></span>
+          <span class="section-chevron">▼</span>
+        </div>
+      </div>
+      <div class="section-items">
+        <div class="item" onclick="toggleItem(this)">
+          <div class="item-check"><span class="checkmark">✓</span></div>
+          <div class="item-content">
+            <div class="item-label">Upgrade GHL to $297/month (supports multiple sub-accounts)</div>
+            <div class="item-note">The $97 plan is limited to 1 sub-account. At 2–3 clients you need the Pro plan. Factor this into your pricing — it drops dramatically per client at scale.</div>
+          </div>
+          <span class="item-tag tag-paid">Paid</span>
+        </div>
+        <div class="item" onclick="toggleItem(this)">
+          <div class="item-check"><span class="checkmark">✓</span></div>
+          <div class="item-content">
+            <div class="item-label">Explore GHL white-labelling (SaaS mode)</div>
+            <div class="item-note">Lets clients log into a branded portal (e.g., "North Reach Platform") instead of a GHL-branded one. Adds perceived value and makes you look like a proper tech company.</div>
+          </div>
+          <span class="item-tag tag-optional">Optional</span>
+        </div>
+        <div class="item" onclick="toggleItem(this)">
+          <div class="item-check"><span class="checkmark">✓</span></div>
+          <div class="item-content">
+            <div class="item-label">Build a client results dashboard</div>
+            <div class="item-note">A simple monthly report (even a PDF or GHL snapshot) showing missed calls recovered, response rate, bookings made. The #1 retention tool — clients stay when they see ROI.</div>
+          </div>
+          <span class="item-tag tag-quick">Quick</span>
+        </div>
+        <div class="item" onclick="toggleItem(this)">
+          <div class="item-check"><span class="checkmark">✓</span></div>
+          <div class="item-content">
+            <div class="item-label">Formalise your Canva / Midjourney subscriptions</div>
+            <div class="item-note">Currently personal use. At scale these become legitimate business expenses. Budget $100–150/month as per your pricing model.</div>
+          </div>
+          <span class="item-tag tag-paid">Paid</span>
+        </div>
+        <div class="item" onclick="toggleItem(this)">
+          <div class="item-check"><span class="checkmark">✓</span></div>
+          <div class="item-content">
+            <div class="item-label">Document your onboarding process as a repeatable SOP</div>
+            <div class="item-note">A step-by-step checklist (like this one!) that you or a VA can follow to set up each new client in under 2 hours. Critical before client #5.</div>
+          </div>
+          <span class="item-tag tag-quick">Quick</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <div class="section-title-row">
+          <div class="section-icon" style="background:#1a1040;">💼</div>
+          <span class="section-title">Business & Finance</span>
+        </div>
+        <div class="section-progress">
+          <div class="section-bar"><div class="section-bar-fill" style="background:#a78bfa;"></div></div>
+          <span class="section-count"></span>
+          <span class="section-chevron">▼</span>
+        </div>
+      </div>
+      <div class="section-items">
+        <div class="item" onclick="toggleItem(this)">
+          <div class="item-check"><span class="checkmark">✓</span></div>
+          <div class="item-content">
+            <div class="item-label">Register for GST (once revenue exceeds $75k AUD/year)</div>
+            <div class="item-note">Not required until you hit the threshold (~6 clients on Growth tier). At that point register via the ATO business portal and start adding GST to invoices.</div>
+          </div>
+          <span class="item-tag tag-legal">Legal</span>
+        </div>
+        <div class="item" onclick="toggleItem(this)">
+          <div class="item-check"><span class="checkmark">✓</span></div>
+          <div class="item-content">
+            <div class="item-label">Set up accounting software (Xero or MYOB)</div>
+            <div class="item-note">~$35–50/month AUD. Makes BAS statements, tax time, and expense tracking painless. Xero integrates with Stripe automatically.</div>
+          </div>
+          <span class="item-tag tag-paid">Paid</span>
+        </div>
+        <div class="item" onclick="toggleItem(this)">
+          <div class="item-check"><span class="checkmark">✓</span></div>
+          <div class="item-content">
+            <div class="item-label">Create a proper service agreement template</div>
+            <div class="item-note">A real contract (can use LawPath or LegalVision — ~$200 one-off) covering payment terms, cancellation, data ownership, and liability. Worth it from client #3 onwards.</div>
+          </div>
+          <span class="item-tag tag-legal">Legal</span>
+        </div>
+        <div class="item" onclick="toggleItem(this)">
+          <div class="item-check"><span class="checkmark">✓</span></div>
+          <div class="item-content">
+            <div class="item-label">Consider hiring a part-time VA for client management</div>
+            <div class="item-note">Filipino VA via OnlineJobs.ph runs ~$600–800 USD/month for 40hrs/week. Can handle client check-ins, reporting, and basic GHL tasks — frees you to focus on sales.</div>
+          </div>
+          <span class="item-tag tag-optional">Optional</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <div class="section-title-row">
+          <div class="section-icon" style="background:#1a1040;">📣</div>
+          <span class="section-title">Marketing & Growth</span>
+        </div>
+        <div class="section-progress">
+          <div class="section-bar"><div class="section-bar-fill" style="background:#a78bfa;"></div></div>
+          <span class="section-count"></span>
+          <span class="section-chevron">▼</span>
+        </div>
+      </div>
+      <div class="section-items">
+        <div class="item" onclick="toggleItem(this)">
+          <div class="item-check"><span class="checkmark">✓</span></div>
+          <div class="item-content">
+            <div class="item-label">Collect a written testimonial + results from first client</div>
+            <div class="item-note">"We recovered 34 leads in month one" is more powerful than any ad copy. Get this before you scale outreach.</div>
+          </div>
+          <span class="item-tag tag-quick">Quick</span>
+        </div>
+        <div class="item" onclick="toggleItem(this)">
+          <div class="item-check"><span class="checkmark">✓</span></div>
+          <div class="item-content">
+            <div class="item-label">Build a referral program for existing clients</div>
+            <div class="item-note">Plumbers talk to other plumbers. One month free for a referral = cheapest acquisition channel you'll ever find.</div>
+          </div>
+          <span class="item-tag tag-optional">Optional</span>
+        </div>
+        <div class="item" onclick="toggleItem(this)">
+          <div class="item-check"><span class="checkmark">✓</span></div>
+          <div class="item-content">
+            <div class="item-label">Set up a Google Business Profile for North Reach</div>
+            <div class="item-note">Free. When plumbing business owners search "missed call service Sydney" you want to show up. Takes 10 minutes to create.</div>
+          </div>
+          <span class="item-tag tag-quick">Quick</span>
+        </div>
+        <div class="item" onclick="toggleItem(this)">
+          <div class="item-check"><span class="checkmark">✓</span></div>
+          <div class="item-content">
+            <div class="item-label">Expand to other trade verticals (electricians, HVAC, builders)</div>
+            <div class="item-note">Same system, different industry. Once you have the plumbing playbook proven, the replication is near-zero effort. The real scale opportunity.</div>
+          </div>
+          <span class="item-tag tag-optional">Optional</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // ── STATE ──
+  const STORAGE_KEY = 'northreach_checklist_v1';
+
+  function loadState() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+    catch { return {}; }
+  }
+  function saveState(state) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }
+
+  function getItemId(el) {
+    const label = el.querySelector('.item-label').textContent.trim();
+    return btoa(encodeURIComponent(label)).substring(0, 20);
+  }
+
+  // ── INIT: restore saved state ──
+  function initItems() {
+    const state = loadState();
+    document.querySelectorAll('.item').forEach(item => {
+      const id = getItemId(item);
+      if (state[id]) {
+        item.classList.add('done');
+      }
+      // already-done items start checked
+      if (item.classList.contains('already-done') && !item.classList.contains('done')) {
+        item.classList.add('done');
+        state[id] = true;
+      }
+    });
+    saveState(state);
+    updateAll();
+  }
+
+  // ── TOGGLE ITEM ──
+  function toggleItem(el) {
+    // Don't allow unchecking "already done" base items (they're always done)
+    const state = loadState();
+    const id = getItemId(el);
+    if (el.classList.toggle('done')) {
+      state[id] = true;
+    } else {
+      delete state[id];
+      // If it's an already-done item, re-check it
+      if (el.classList.contains('already-done')) {
+        el.classList.add('done');
+        state[id] = true;
+      }
+    }
+    saveState(state);
+    updateAll();
+  }
+
+  // ── TOGGLE SECTION ──
+  function toggleSection(header) {
+    header.classList.toggle('collapsed');
+    const items = header.nextElementSibling;
+    if (header.classList.contains('collapsed')) {
+      items.style.display = 'none';
+    } else {
+      items.style.display = 'flex';
+    }
+  }
+
+  // ── TABS ──
+  function switchTab(idx) {
+    document.querySelectorAll('.tab-btn').forEach((b, i) => b.classList.toggle('active', i === idx));
+    document.querySelectorAll('.phase-panel').forEach((p, i) => p.classList.toggle('active', i === idx));
+  }
+
+  // ── UPDATE PROGRESS ──
+  function updateAll() {
+    // Section bars
+    document.querySelectorAll('.section').forEach(section => {
+      const items = section.querySelectorAll('.item');
+      const done = section.querySelectorAll('.item.done').length;
+      const total = items.length;
+      const pct = total ? (done / total * 100) : 0;
+      const fill = section.querySelector('.section-bar-fill');
+      if (fill) fill.style.width = pct + '%';
+      const count = section.querySelector('.section-count');
+      if (count) count.textContent = done + '/' + total;
+    });
+
+    // Tab badges (count remaining)
+    document.querySelectorAll('.phase-panel').forEach((panel, i) => {
+      const items = panel.querySelectorAll('.item');
+      const done = panel.querySelectorAll('.item.done').length;
+      const remaining = items.length - done;
+      const badge = document.getElementById('badge-' + i);
+      if (badge) badge.textContent = i === 0 ? done + '/' + items.length : remaining + ' left';
+    });
+
+    // Overall
+    const allItems = document.querySelectorAll('.item');
+    const allDone = document.querySelectorAll('.item.done').length;
+    const pct = allItems.length ? Math.round(allDone / allItems.length * 100) : 0;
+    document.getElementById('overall-pct').textContent = pct + '%';
+    document.getElementById('overall-bar-fill').style.width = pct + '%';
+  }
+
+  // ── RESET ──
+  function resetAll() {
+    if (!confirm('Reset all checkboxes? Already-done items will stay checked.')) return;
+    localStorage.removeItem(STORAGE_KEY);
+    document.querySelectorAll('.item').forEach(item => {
+      if (!item.classList.contains('already-done')) {
+        item.classList.remove('done');
+      }
+    });
+    initItems();
+  }
+
+  // ── BOOT ──
+  initItems();
+</script>
+</body>
+</html>
